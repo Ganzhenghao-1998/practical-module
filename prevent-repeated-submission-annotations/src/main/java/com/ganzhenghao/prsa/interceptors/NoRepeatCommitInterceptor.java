@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ganzhenghao.prsa.annotation.NoRepeatCommit;
 import com.ganzhenghao.prsa.config.NoRepeatCommitConfig;
 import com.ganzhenghao.prsa.service.CacheService;
+import com.ganzhenghao.prsa.service.impl.HutoolCacheImpl;
+import com.ganzhenghao.prsa.util.CacheKeyThreadLocal;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
-import com.ganzhenghao.prsa.util.RedisKeyThreadLocal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,11 +28,14 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/8/24 11:57
  */
 @ControllerAdvice
-public class NoRepeatInterceptor implements HandlerInterceptor {
+public class NoRepeatCommitInterceptor implements HandlerInterceptor {
 
 
     @Autowired
     private CacheService redisCache;
+
+    @Autowired
+    private CacheService hutoolCache;
 
     @Autowired
     private ObjectMapper json;
@@ -72,7 +76,8 @@ public class NoRepeatInterceptor implements HandlerInterceptor {
         switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
             case Redis:
                 return cacheImp(methodHandler, request, response, redisCache);
-
+            case Internal_Hutool:
+                return cacheImp(methodHandler, request, response, hutoolCache);
         }
 
 
@@ -93,8 +98,13 @@ public class NoRepeatInterceptor implements HandlerInterceptor {
 
         switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
             case Redis:
-                redisTemplate.delete(RedisKeyThreadLocal.get());
-                RedisKeyThreadLocal.remove();
+                redisTemplate.delete(CacheKeyThreadLocal.get());
+                CacheKeyThreadLocal.remove();
+                break;
+            case Internal_Hutool:
+                HutoolCacheImpl hutoolCacheImpl = (HutoolCacheImpl) this.hutoolCache;
+                hutoolCacheImpl.getTimedCache().remove(CacheKeyThreadLocal.get());
+                CacheKeyThreadLocal.remove();
                 break;
         }
 
@@ -186,7 +196,7 @@ public class NoRepeatInterceptor implements HandlerInterceptor {
             if (result) {
                 // 设置成功时,将cacheKey存入ThreadLocal中,最后在请求完成后删除该ThreadLocal
                 String cacheKey = CacheKeyUtil.getCacheKey(cacheKeyPrefix, id);
-                RedisKeyThreadLocal.set(cacheKey);
+                CacheKeyThreadLocal.set(cacheKey);
 
             } else {
                 //如果请求被拦截 则返回状态码

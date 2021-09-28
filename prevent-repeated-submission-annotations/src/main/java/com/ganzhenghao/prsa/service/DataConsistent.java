@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
  * @version 1.0
  * @date 2021/9/28 11:30
  */
-public interface DataConsistentService {
+public interface DataConsistent {
 
     // todo 数据校验接口
     public boolean dataCheck(HttpServletRequest request, Class<?> clazz);

@@ -1,5 +1,6 @@
 package com.ganzhenghao.prsa.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.ganzhenghao.prsa.exception.DataException;
 import com.ganzhenghao.prsa.service.CacheService;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
@@ -29,12 +30,17 @@ public class RedisCacheImpl implements CacheService {
         }
 
         String cacheKey = CacheKeyUtil.getCacheKey(cacheKeyPrefix, id);
+        // 如果data为空 那么使用cacheKey
+        if (StrUtil.isEmpty(data)) {
+            data = cacheKey;
+        }
         return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(cacheKey, data, time, unit));
     }
 
     @Override
     public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit) {
-        return cache(id, cacheKeyPrefix, time, unit, "");
+        // 如果 没有data 那么 使用id替代data
+        return cache(id, cacheKeyPrefix, time, unit, id);
     }
 
 }

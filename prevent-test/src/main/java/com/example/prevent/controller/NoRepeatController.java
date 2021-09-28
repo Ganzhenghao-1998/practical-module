@@ -1,7 +1,7 @@
 package com.example.prevent.controller;
 
 import com.ganzhenghao.prsa.annotation.NoRepeatCommit;
-import com.ganzhenghao.prsa.util.RedisKeyThreadLocal;
+import com.ganzhenghao.prsa.util.CacheKeyThreadLocal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,13 +32,13 @@ public class NoRepeatController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "success  -->" + RedisKeyThreadLocal.get();
+        return "success  -->" + CacheKeyThreadLocal.get();
     }
 
     @PostMapping("/m2")
     @NoRepeatCommit
     public String m2() {
-        return "success  -->" + RedisKeyThreadLocal.get();
+        return "success  -->" + CacheKeyThreadLocal.get();
     }
 
 }

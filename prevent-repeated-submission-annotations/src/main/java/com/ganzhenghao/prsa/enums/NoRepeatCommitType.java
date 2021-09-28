@@ -15,9 +15,7 @@ public enum NoRepeatCommitType {
     Mysql("使用Mysql进行防重复提交Key的存储判断"),
     Lock("加Sync锁"),
     Distributed_Locks_Redis("加分布式锁(基于Redis分布式锁)"),
-    Distributed_Locks("加分布式锁"),
-    Hash("进行数据Hash判断"),
-    Data("进行数据校验");
+    Distributed_Locks("加分布式锁");
 
     NoRepeatCommitType(String type) {
     }

@@ -1,7 +1,7 @@
 package com.ganzhenghao.prsa.config;
 
 
-import com.ganzhenghao.prsa.interceptors.NoRepeatInterceptor;
+import com.ganzhenghao.prsa.interceptors.NoRepeatCommitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,10 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @date 2021/08/26
  */
 @Configuration
-public class InterceptorConfig implements WebMvcConfigurer {
+public class NoRepeatCommitInterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
-    private NoRepeatInterceptor noRepeatInterceptor;
+    private NoRepeatCommitInterceptor noRepeatCommitInterceptor;
 
     @Autowired
     private NoRepeatCommitConfig noRepeatCommitConfig;
@@ -32,8 +32,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
             case Redis:
-                registry.addInterceptor(noRepeatInterceptor).addPathPatterns("/**");
+            case Internal_Hutool:
+                registry.addInterceptor(noRepeatCommitInterceptor).addPathPatterns("/**");
                 break;
+
         }
 
 

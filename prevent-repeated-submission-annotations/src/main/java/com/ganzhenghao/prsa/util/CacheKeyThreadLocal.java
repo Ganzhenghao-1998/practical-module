@@ -7,7 +7,7 @@ package com.ganzhenghao.prsa.util;
  * @version 1.0
  * @date 2021/9/28 10:54
  */
-public class RedisKeyThreadLocal {
+public class CacheKeyThreadLocal {
 
     /**
      * 当地的
@@ -17,7 +17,7 @@ public class RedisKeyThreadLocal {
     /**
      * 复述,关键线程本地
      */
-    private RedisKeyThreadLocal() {
+    private CacheKeyThreadLocal() {
     }
 
     /**
