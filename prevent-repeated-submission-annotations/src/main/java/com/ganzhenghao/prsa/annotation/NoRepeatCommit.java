@@ -27,7 +27,7 @@ public @interface NoRepeatCommit {
      *
      * @return {@link String}
      */
-    String redisKeyPrefix() default "NoRepeatCommit:";
+    String cacheKeyPrefix() default "NoRepeatCommit";
 
     /**
      * 时间单位

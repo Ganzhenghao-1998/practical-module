@@ -15,5 +15,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface DataConsistent {
 
-
+    // todo 数据校验注解
 }

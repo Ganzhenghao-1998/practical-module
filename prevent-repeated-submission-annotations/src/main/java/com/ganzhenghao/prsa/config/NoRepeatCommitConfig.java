@@ -28,7 +28,7 @@ public class NoRepeatCommitConfig {
     /**
      * 全局redis-key前缀
      */
-    private String redisKeyPrefix = "NoRepeatCommit:";
+    private String cacheKeyPrefix = "NoRepeatCommit";
 
     /**
      * 是否开启id生成Controller 默认为false

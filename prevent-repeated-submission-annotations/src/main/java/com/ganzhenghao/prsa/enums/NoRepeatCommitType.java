@@ -10,9 +10,11 @@ package com.ganzhenghao.prsa.enums;
 public enum NoRepeatCommitType {
 
     Redis("使用redis进行防重复提交Key的存储判断"),
-    Internal("使用内置的缓存机制进行防重复提交Key的存储判断"),
+    Internal_Hutool("使用内置的(基于Hutool)缓存机制进行防重复提交Key的存储判断"),
+    Internal_ConcurrentHashMap("使用内置的(基于Internal_ConcurrentHashMap)缓存机制进行防重复提交Key的存储判断"),
     Mysql("使用Mysql进行防重复提交Key的存储判断"),
     Lock("加Sync锁"),
+    Distributed_Locks_Redis("加分布式锁(基于Redis分布式锁)"),
     Distributed_Locks("加分布式锁"),
     Hash("进行数据Hash判断"),
     Data("进行数据校验");

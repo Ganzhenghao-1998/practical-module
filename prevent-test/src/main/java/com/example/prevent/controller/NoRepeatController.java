@@ -22,7 +22,7 @@ public class NoRepeatController {
     @NoRepeatCommit(
             expireTime = 2,
             status = 401,
-            redisKeyPrefix = "m1:",
+            cacheKeyPrefix = "m1:",
             headerName = "m1",
             timeUnit = TimeUnit.MINUTES
     )

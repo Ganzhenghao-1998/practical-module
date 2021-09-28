@@ -17,7 +17,7 @@ class PreventTestApplicationTests {
 
     @Test
     public void testMethodName() {
-        System.out.println(noRepeatCommit.redisKeyPrefix());
+        System.out.println(noRepeatCommit.cacheKeyPrefix());
         System.out.println(noRepeatCommit.headerName());
     }
 
