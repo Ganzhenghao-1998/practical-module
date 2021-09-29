@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ganzhenghao.prsa.annotation.NoRepeatCommit;
 import com.ganzhenghao.prsa.config.NoRepeatCommitConfig;
 import com.ganzhenghao.prsa.service.CacheService;
+import com.ganzhenghao.prsa.service.impl.ConcurrentHashMapCacheImpl;
 import com.ganzhenghao.prsa.service.impl.HutoolCacheImpl;
 import com.ganzhenghao.prsa.util.CacheKeyThreadLocal;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
@@ -31,10 +32,11 @@ import java.util.concurrent.TimeUnit;
 public class NoRepeatCommitInterceptor implements HandlerInterceptor {
 
 
-    @Autowired
+    @Autowired(required = false)
+    CacheService concurrentHashMapCache;
+    @Autowired(required = false)
     private CacheService redisCache;
-
-    @Autowired
+    @Autowired(required = false)
     private CacheService hutoolCache;
 
     @Autowired
@@ -42,7 +44,9 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
 
     @Autowired
     private NoRepeatCommitConfig noRepeatCommitConfig;
-
+    /**
+     * 默认的注解 该对象的属性 全是注解默认值
+     */
     @Autowired
     private NoRepeatCommit noRepeatCommit;
 
@@ -78,6 +82,8 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                 return cacheImp(methodHandler, request, response, redisCache);
             case Internal_Hutool:
                 return cacheImp(methodHandler, request, response, hutoolCache);
+            case Internal_ConcurrentHashMap:
+                return cacheImp(methodHandler, request, response, concurrentHashMapCache);
         }
 
 
@@ -106,6 +112,12 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                 hutoolCacheImpl.getTimedCache().remove(CacheKeyThreadLocal.get());
                 CacheKeyThreadLocal.remove();
                 break;
+            case Internal_ConcurrentHashMap:
+                ConcurrentHashMapCacheImpl concurrentHashMapCacheImpl = (ConcurrentHashMapCacheImpl) this.concurrentHashMapCache;
+                concurrentHashMapCacheImpl.getCacheMap().remove(CacheKeyThreadLocal.get());
+                CacheKeyThreadLocal.remove();
+                break;
+
         }
 
     }
@@ -149,27 +161,44 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            //获取请求头和返回的状态码,以注解的值优先
+            //以下五个 获取到的是全局值
+            //获取请求头和返回的状态码
             String headerName = noRepeatCommitConfig.getHeaderName();
             Integer status = noRepeatCommitConfig.getStatus();
             //获取cacheKey前缀
             String cacheKeyPrefix = noRepeatCommitConfig.getCacheKeyPrefix();
 
+            //获取到定义时间值 单位:分钟
+            Long expireTime = noRepeatCommitConfig.getExpireTime();
+            //获取时间单位
+            TimeUnit timeUnit = noRepeatCommitConfig.getTimeUnit();
 
             // 局部header和默认header头不同,以局部header头为准
+            // (如果局部的注解上的值和默认的值不同,那么使用局部的值,否则使用全局的值)
             if (!noRepeatCommit.headerName().equals(anno.headerName())) {
                 headerName = anno.headerName();
             }
 
-            //  局部status和默认status不同时 以局部status为准
-            if (anno.status() != noRepeatCommit.status()) {
+            //  局部status和默认status不同时 以局部status为准,否则使用全局的值
+            if (noRepeatCommit.status() != anno.status()) {
                 status = anno.status();
             }
 
-            // 局部redisKeyPrefix和默认不同时,以局部为准
+            // 局部redisKeyPrefix和默认不同时,以局部为准,否则使用全局的值
             if (!noRepeatCommit.cacheKeyPrefix().equals(anno.cacheKeyPrefix())) {
                 cacheKeyPrefix = anno.cacheKeyPrefix();
             }
+
+            // 局部过期时间和默认不同时,以局部为准,否则使用全局的值
+            if (noRepeatCommit.expireTime() != anno.expireTime()) {
+                expireTime = anno.expireTime();
+            }
+
+            // 局部过期时间单位和默认不同时,以局部为准,否则使用全局的值
+            if (noRepeatCommit.timeUnit() != anno.timeUnit()) {
+                timeUnit = anno.timeUnit();
+            }
+
 
             //获取请求头的id
             String id = request.getHeader(headerName);
@@ -184,14 +213,9 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                 return false;
             }
 
-            //获取到定义时间值 单位:分钟
-            int expire = anno.expireTime();
-
-            //获取时间单位
-            TimeUnit unit = anno.timeUnit();
 
             // true --> 设置id成功  false --> 设置失败
-            boolean result = cacheService.cache(id, cacheKeyPrefix, expire, unit);
+            boolean result = cacheService.cache(id, cacheKeyPrefix, expireTime, timeUnit);
 
             if (result) {
                 // 设置成功时,将cacheKey存入ThreadLocal中,最后在请求完成后删除该ThreadLocal

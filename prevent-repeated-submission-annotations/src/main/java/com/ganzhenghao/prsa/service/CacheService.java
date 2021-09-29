@@ -1,5 +1,7 @@
 package com.ganzhenghao.prsa.service;
 
+import com.ganzhenghao.prsa.exception.DataException;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,7 +23,7 @@ public interface CacheService {
      * @param data           数据
      * @return {@link Boolean}
      */
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit, String data);
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit, String data);
 
     /**
      * 缓存
@@ -32,6 +34,12 @@ public interface CacheService {
      * @param unit           单位
      * @return {@link Boolean}设置id成功返回true 失败返回false
      */
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit);
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit);
+
+    default void argsCheck(String id, String cacheKeyPrefix, Long time, TimeUnit unit) {
+        if (id == null || cacheKeyPrefix == null || cacheKeyPrefix.length() == 0 || time == null || unit == null) {
+            throw new DataException("数据异常");
+        }
+    }
 
 }

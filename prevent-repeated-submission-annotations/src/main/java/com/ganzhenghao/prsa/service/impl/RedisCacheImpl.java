@@ -1,13 +1,14 @@
 package com.ganzhenghao.prsa.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.ganzhenghao.prsa.exception.DataException;
 import com.ganzhenghao.prsa.service.CacheService;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,16 +19,24 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 11:33
  */
 @Service("redisCache")
+// 因为这个是默认值 所以 如果配置文件没有设置值 那么就会失效
+//@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('redis')")
+@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "redis", matchIfMissing = true)
 public class RedisCacheImpl implements CacheService {
+
+
+    @PostConstruct
+    public void init() {
+        System.out.println("RedisCacheImpl 加载了@");
+    }
 
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Override
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit, String data) {
-        if (id == null || cacheKeyPrefix == null || cacheKeyPrefix.length() == 0 || time == null || unit == null) {
-            throw new DataException("数据异常");
-        }
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit, String data) {
+
+        argsCheck(id, cacheKeyPrefix, time, unit);
 
         String cacheKey = CacheKeyUtil.getCacheKey(cacheKeyPrefix, id);
         // 如果data为空 那么使用cacheKey
@@ -37,10 +46,11 @@ public class RedisCacheImpl implements CacheService {
         return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(cacheKey, data, time, unit));
     }
 
+
     @Override
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit) {
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit) {
         // 如果 没有data 那么 使用id替代data
-        return cache(id, cacheKeyPrefix, time, unit, id);
+        return cache(id, cacheKeyPrefix, time, unit, "");
     }
 
 }

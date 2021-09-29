@@ -3,10 +3,10 @@ package com.ganzhenghao.prsa.service.impl;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.StrUtil;
-import com.ganzhenghao.prsa.exception.DataException;
 import com.ganzhenghao.prsa.service.CacheService;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
 import lombok.Getter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 11:46
  */
 @Service("hutoolCache")
+//@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('internal_hutool')")
+@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_hutool", matchIfMissing = false)
 public class HutoolCacheImpl implements CacheService {
 
 
@@ -31,16 +33,16 @@ public class HutoolCacheImpl implements CacheService {
     public void init() {
         // 默认缓存 5 分钟过期
         timedCache = CacheUtil.newTimedCache(1000 * 60 * 5);
-        // 每 3 分钟清理一次缓存
-        timedCache.schedulePrune(1000 * 60 * 3);
+        // 每 5 分钟清理一次缓存
+        timedCache.schedulePrune(1000 * 60 * 5);
+
+        System.out.println("HutoolCacheImpl 加载了@");
     }
 
     @Override
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit, String data) {
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit, String data) {
 
-        if (id == null || cacheKeyPrefix == null || cacheKeyPrefix.length() == 0 || time == null || unit == null) {
-            throw new DataException("数据异常");
-        }
+        argsCheck(id, cacheKeyPrefix, time, unit);
 
         long expireTime = unit.toMillis(time);
 
@@ -79,7 +81,7 @@ public class HutoolCacheImpl implements CacheService {
     }
 
     @Override
-    public boolean cache(String id, String cacheKeyPrefix, Integer time, TimeUnit unit) {
+    public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit) {
 
         return cache(id, cacheKeyPrefix, time, unit, "");
     }

@@ -33,6 +33,7 @@ public class NoRepeatCommitInterceptorConfig implements WebMvcConfigurer {
         switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
             case Redis:
             case Internal_Hutool:
+            case Internal_ConcurrentHashMap:
                 registry.addInterceptor(noRepeatCommitInterceptor).addPathPatterns("/**");
                 break;
 

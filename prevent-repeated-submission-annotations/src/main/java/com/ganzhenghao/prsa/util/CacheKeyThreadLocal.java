@@ -1,7 +1,7 @@
 package com.ganzhenghao.prsa.util;
 
 /**
- * 复述,关键线程本地
+ * 缓存键的ThreadLocal
  *
  * @author Ganzhenghao
  * @version 1.0

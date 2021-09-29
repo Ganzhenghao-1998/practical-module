@@ -4,6 +4,8 @@ import com.ganzhenghao.prsa.enums.NoRepeatCommitType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 防重复提交配置
  *
@@ -39,6 +41,27 @@ public class NoRepeatCommitConfig {
      * 使用何种方式进行防重复提交
      */
     private NoRepeatCommitType noRepeatCommitType = NoRepeatCommitType.Redis;
+
+    /**
+     * 全局过期时间
+     */
+    private Long expireTime = 5L;
+
+    /**
+     * 过期时间的时间单位
+     */
+    private TimeUnit timeUnit = TimeUnit.MINUTES;
+
+
+    /**
+     * 清楚缓存的时间间隔
+     */
+    private Long clearCacheTimeInterval = 5L;
+
+    /**
+     * 清楚缓存时间间隔单位:默认为分钟
+     */
+    private TimeUnit clearCacheTimeIntervalTimeUnit = TimeUnit.MINUTES;
 
 
 }

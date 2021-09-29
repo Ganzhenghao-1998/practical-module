@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 public @interface NoRepeatCommit {
 
     /**
-     * Redis中Key过期时间 默认 1分钟
+     * Redis中Key过期时间 默认 5 分钟
      *
      * @return {@link String}
      */
-    int expireTime() default 1;
+    long expireTime() default 5;
 
     /**
      * RedisKey前缀
