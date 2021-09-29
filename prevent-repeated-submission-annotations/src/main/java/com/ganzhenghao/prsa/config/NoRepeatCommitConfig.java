@@ -54,12 +54,12 @@ public class NoRepeatCommitConfig {
 
 
     /**
-     * 清楚缓存的时间间隔
+     * 清除缓存的时间间隔
      */
     private Long clearCacheTimeInterval = 5L;
 
     /**
-     * 清楚缓存时间间隔单位:默认为分钟
+     * 清除缓存时间间隔单位:默认为分钟
      */
     private TimeUnit clearCacheTimeIntervalTimeUnit = TimeUnit.MINUTES;
 

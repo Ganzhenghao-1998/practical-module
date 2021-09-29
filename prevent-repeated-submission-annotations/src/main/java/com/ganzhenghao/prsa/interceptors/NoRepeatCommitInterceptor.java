@@ -34,8 +34,10 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
 
     @Autowired(required = false)
     CacheService concurrentHashMapCache;
+
     @Autowired(required = false)
     private CacheService redisCache;
+
     @Autowired(required = false)
     private CacheService hutoolCache;
 
@@ -85,7 +87,6 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
             case Internal_ConcurrentHashMap:
                 return cacheImp(methodHandler, request, response, concurrentHashMapCache);
         }
-
 
         return true;
     }

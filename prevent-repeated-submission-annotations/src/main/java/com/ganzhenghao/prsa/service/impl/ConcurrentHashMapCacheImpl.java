@@ -22,13 +22,8 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 17:02
  */
 @Service("concurrentHashMapCache")
-// 在NoRepeatCommitScheduledConfig加载后加载
-//@DependsOn("noRepeatCommitScheduledConfig")
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_concurrenthashmap", matchIfMissing = false)
 public class ConcurrentHashMapCacheImpl implements CacheService {
-
-//    @Autowired
-//    private NoRepeatCommitScheduledConfig noRepeatCommitScheduledConfig;
 
     @Autowired
     NoRepeatCommitScheduledConfig noRepeatCommitScheduledConfig;
@@ -59,6 +54,7 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
         //如果指定的键尚未与值关联（或映射到null ）将其与给定值关联并返回null ，否则返回当前值。
         //返回值：
         //与指定键关联的前一个值，如果没有该键的映射，则为null
+        // todo 目前有个问题 putIfAbsent是ConcurrentHashMap自带的方法 他不会判断数据是否过期, 需要等待后台任务清理过期键值,所以数据实际过期时间可能比设置时间要长
         CacheData<?> result = cacheMap.putIfAbsent(cacheKey, cacheData);
 
         // 返回true代表设置成功

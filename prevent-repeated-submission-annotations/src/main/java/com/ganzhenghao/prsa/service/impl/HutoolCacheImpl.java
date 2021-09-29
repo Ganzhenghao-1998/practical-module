@@ -3,9 +3,11 @@ package com.ganzhenghao.prsa.service.impl;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.StrUtil;
+import com.ganzhenghao.prsa.config.NoRepeatCommitConfig;
 import com.ganzhenghao.prsa.service.CacheService;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +30,32 @@ public class HutoolCacheImpl implements CacheService {
     @Getter
     private TimedCache<String, String> timedCache;
 
+    @Autowired
+    private NoRepeatCommitConfig config;
+
 
     @PostConstruct
     public void init() {
-        // 默认缓存 5 分钟过期
-        timedCache = CacheUtil.newTimedCache(1000 * 60 * 5);
-        // 每 5 分钟清理一次缓存
-        timedCache.schedulePrune(1000 * 60 * 5);
 
-        System.out.println("HutoolCacheImpl 加载了@");
+        // 获取缓存清理间隔时间
+        Long clearCacheTimeInterval = config.getClearCacheTimeInterval();
+        TimeUnit timeUnit = config.getClearCacheTimeIntervalTimeUnit();
+        long clearCacheTime = timeUnit.toMillis(clearCacheTimeInterval);
+
+        // 获取键值默认过期时间
+        TimeUnit unit = config.getTimeUnit();
+        Long expireTime = config.getExpireTime();
+
+        expireTime = unit.toMillis(expireTime);
+
+        // 设置缓存过期时间
+        timedCache = CacheUtil.newTimedCache(expireTime);
+        // 设置缓存清理间隔时间
+        timedCache.schedulePrune(clearCacheTime);
+
+
+        System.out.println("HutoolCacheImpl 加载了@ 缓存过期时间:" + clearCacheTime / 1000L + "秒" +
+                " @ 缓存清理间隔时间: " + expireTime / 1000L + " 秒");
     }
 
     @Override
@@ -78,6 +97,7 @@ public class HutoolCacheImpl implements CacheService {
                 return true;
             }
         }
+
     }
 
     @Override
