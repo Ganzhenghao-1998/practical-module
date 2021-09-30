@@ -54,7 +54,7 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
         //如果指定的键尚未与值关联（或映射到null ）将其与给定值关联并返回null ，否则返回当前值。
         //返回值：
         //与指定键关联的前一个值，如果没有该键的映射，则为null
-        // todo 目前有个问题 putIfAbsent是ConcurrentHashMap自带的方法 他不会判断数据是否过期, 需要等待后台任务清理过期键值,所以数据实际过期时间可能比设置时间要长
+        // todo 目前有个问题 putIfAbsent是ConcurrentHashMap自带的方法 他不会判断数据是否过期, 需要等待后台任务清理过期键值,所以数据实际过期时间可能比设置时间要长, 解决办法:可以封装一个新的ConcurrentHashMap来实现
         CacheData<?> result = cacheMap.putIfAbsent(cacheKey, cacheData);
 
         // 返回true代表设置成功
