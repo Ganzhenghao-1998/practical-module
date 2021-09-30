@@ -71,6 +71,10 @@ public class CacheData<T> {
 
     }
 
+    public synchronized void resetExpireTime() {
+        this.actualExpirationTime += expireTime;
+    }
+
 
     @Override
     public String toString() {

@@ -62,7 +62,8 @@ public class NoRepeatCommitScheduledConfig {
                 // todo  具体减少策略还需斟酌 无限制减少可能会出现线程占用过大 或则 时间为负数
                 if (maxClearCacheTime <= System.currentTimeMillis() - time) {
                     timer.cancel();
-                    timer.schedule(this, 1000, maxClearCacheTime - 1000L);
+                    maxClearCacheTime = maxClearCacheTime - 1000L;
+                    timer.schedule(this, 1000, maxClearCacheTime);
                 }
 
             }

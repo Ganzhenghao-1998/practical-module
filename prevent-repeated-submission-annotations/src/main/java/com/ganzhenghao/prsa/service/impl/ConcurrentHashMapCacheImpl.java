@@ -57,6 +57,21 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
         // todo 目前有个问题 putIfAbsent是ConcurrentHashMap自带的方法 他不会判断数据是否过期, 需要等待后台任务清理过期键值,所以数据实际过期时间可能比设置时间要长, 解决办法:可以封装一个新的ConcurrentHashMap来实现
         CacheData<?> result = cacheMap.putIfAbsent(cacheKey, cacheData);
 
+
+        // 如果指定键的值存在，则尝试计算给定键及其当前映射值的新映射。
+        // 整个方法调用以原子方式执行。
+        // 其他线程在此映射上尝试的一些更新操作在计算过程中可能会被阻塞，
+        // 因此计算应该简短且简单，并且不得尝试更新此映射的任何其他映射。
+        //返回值：
+        //与指定键关联的新值，如果没有，则为 null
+
+/*        CacheData<?> ifPresentCacheData = cacheMap.computeIfPresent(cacheKey, (key, value) -> {
+            value.resetExpireTime();
+            return value;
+        });
+        */
+
+
         // 返回true代表设置成功
         return null == result;
 

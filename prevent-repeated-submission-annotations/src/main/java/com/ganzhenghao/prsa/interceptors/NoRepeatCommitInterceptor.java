@@ -103,23 +103,37 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
-        switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
-            case Redis:
-                redisTemplate.delete(CacheKeyThreadLocal.get());
-                CacheKeyThreadLocal.remove();
-                break;
-            case Internal_Hutool:
-                HutoolCacheImpl hutoolCacheImpl = (HutoolCacheImpl) this.hutoolCache;
-                hutoolCacheImpl.getTimedCache().remove(CacheKeyThreadLocal.get());
-                CacheKeyThreadLocal.remove();
-                break;
-            case Internal_ConcurrentHashMap:
-                ConcurrentHashMapCacheImpl concurrentHashMapCacheImpl = (ConcurrentHashMapCacheImpl) this.concurrentHashMapCache;
-                concurrentHashMapCacheImpl.getCacheMap().remove(CacheKeyThreadLocal.get());
-                CacheKeyThreadLocal.remove();
-                break;
+        // 只有当注解有@NoRepaetCommit时,并且还得判断是否是使用的缓存机制,加锁机制则不删缓存,才删除键值
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod methodHandler = (HandlerMethod) handler;
+
+            boolean result = methodHandler.hasMethodAnnotation(NoRepeatCommit.class);
+            //如果没有 @NoRepeatCommit ,则不进行任何处理
+            if (!result) {
+                return;
+            }
+
+            switch (noRepeatCommitConfig.getNoRepeatCommitType()) {
+                case Redis:
+                    redisTemplate.delete(CacheKeyThreadLocal.get());
+                    CacheKeyThreadLocal.remove();
+                    break;
+                case Internal_Hutool:
+                    HutoolCacheImpl hutoolCacheImpl = (HutoolCacheImpl) this.hutoolCache;
+                    hutoolCacheImpl.getTimedCache().remove(CacheKeyThreadLocal.get());
+                    CacheKeyThreadLocal.remove();
+                    break;
+                case Internal_ConcurrentHashMap:
+                    ConcurrentHashMapCacheImpl concurrentHashMapCacheImpl = (ConcurrentHashMapCacheImpl) this.concurrentHashMapCache;
+                    concurrentHashMapCacheImpl.getCacheMap().remove(CacheKeyThreadLocal.get());
+                    CacheKeyThreadLocal.remove();
+                    break;
+
+            }
+
 
         }
+
 
     }
 

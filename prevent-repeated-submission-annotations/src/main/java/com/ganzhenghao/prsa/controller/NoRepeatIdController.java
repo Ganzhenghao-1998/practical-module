@@ -5,6 +5,7 @@ import com.ganzhenghao.prsa.service.CacheIdGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -18,17 +19,20 @@ import java.util.Map;
  * @date 2021/9/27 16:01
  */
 @RestController
-@RequestMapping("/id")
+@RequestMapping("${no.repeat.commit.id-controller.controller-path:id}")
 @ConditionalOnExpression("${no.repeat.commit.open-id-controller}")
 public class NoRepeatIdController {
 
     @Autowired(required = false)
     private CacheIdGenerate cacheIdGenerate;
 
-    @RequestMapping("/getId")
+    @RequestMapping(value = "${no.repeat.commit.id-controller.get-id-path:getId}",
+            method = {RequestMethod.GET, RequestMethod.POST})
     public Map<String, String> getSpecialId() {
-        Map<String, String> map = new HashMap<>(2);
 
+        //todo 可以加入属性检测 检查header头等等
+
+        Map<String, String> map = new HashMap<>(2);
         String id = null;
         if (cacheIdGenerate == null) {
             // 使用糊涂工具生成唯一id   todo 自己实现唯一id算法
@@ -43,8 +47,6 @@ public class NoRepeatIdController {
 
         return map;
     }
-
-
 
 
 }
