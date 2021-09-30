@@ -56,7 +56,7 @@ public class NoRepeatCommitScheduledConfig {
                     }
                 }
                 //如果当前执行清理缓存任务的时间超过间隔时间,则减小清理间隔周期
-                // todo  具体减少策略还需斟酌 无限制减少可能会出现线程占用过大 或则 时间为负数
+                // todo  具体减少策略还需斟酌 无限制减少可能会出现线程占用过大 或者 时间为负数
                 if (maxClearCacheTime <= System.currentTimeMillis() - time) {
                     timer.cancel();
                     maxClearCacheTime = maxClearCacheTime - 1000L;

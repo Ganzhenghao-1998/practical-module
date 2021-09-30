@@ -86,14 +86,13 @@ public class SynchronizedLockableImpl implements Lockable {
      * @return {@link Object}
      */
     private Object executeRequestLogic(ProceedingJoinPoint pjp) {
-
         Object ret = null;
         try {
             ret = pjp.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
         return ret;
     }
 }
