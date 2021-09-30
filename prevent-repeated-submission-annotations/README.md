@@ -4,7 +4,13 @@
 
 原理一: 使用缓存机制或则数据库实现
 ![](https://g-picture.oss-cn-chengdu.aliyuncs.com/markdown/2021-7/1632902739031.png)
-原理二: 直接加锁 通过aop 对对应请求
+原理二: 直接加锁 通过aop 对对应请求加锁
+
+> 使用方式:
+配置文件设置好后,只需要在对应需要防重复提交的controller方法上加@NoReapeatCommit注解    
+如果有局部需求,可以使用@NoRepeatCommit的参数,    
+在防重复提交时:注解局部参数 > 配置文件参数 > 默认参数   
+备注: 如果是用加锁的方式,那么@NoRepeatCommit的局部参数无效,全局参数也无效
 
 ```pom
         <dependency>
@@ -15,6 +21,8 @@
 ```
 
 1. 配置文件详解
+
+redis的配置和 spring-boot-starter的配置一样
 
 ```properties
 # redis 默认值,使用redis实现缓存
@@ -76,3 +84,4 @@ no.repeat.commit.id-controller.get-id-path=getId
 
 
 ```
+
