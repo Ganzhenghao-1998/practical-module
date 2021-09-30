@@ -19,8 +19,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 11:33
  */
 @Service("redisCache")
-// 因为这个是默认值 所以 如果配置文件没有设置值 那么就会失效
-//@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('redis')")
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "redis", matchIfMissing = true)
 public class RedisCacheImpl implements CacheService {
 

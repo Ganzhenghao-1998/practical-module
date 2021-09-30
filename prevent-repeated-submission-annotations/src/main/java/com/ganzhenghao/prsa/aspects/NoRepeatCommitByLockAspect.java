@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Aspect
-//@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "lock", matchIfMissing = false)
 @ConditionalOnLock(prefix = "no.repeat.commit", name = "no-repeat-commit-type", havingValue = {"lock", "distributed_locks", "distributed_locks_redis"}, matchIfMissing = false)
 public class NoRepeatCommitByLockAspect {
 

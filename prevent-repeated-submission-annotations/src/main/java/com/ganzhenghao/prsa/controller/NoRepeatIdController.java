@@ -20,7 +20,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("${no.repeat.commit.id-controller.controller-path:id}")
-//@ConditionalOnExpression("${no.repeat.commit.open-id-controller}"
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"open-id-controller"}, havingValue = "true", matchIfMissing = false)
 public class NoRepeatIdController {
 

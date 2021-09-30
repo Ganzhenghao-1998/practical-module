@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 17:05
  */
 @Configuration
-//@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('internal_concurrenthashmap')"
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_concurrenthashmap", matchIfMissing = false)
 public class NoRepeatCommitScheduledConfig {
 
@@ -75,20 +74,6 @@ public class NoRepeatCommitScheduledConfig {
 
     }
 
-    // todo 将过期时间设置为全局过期时间clearCacheTime 但是目前注解值没有好的解决办法 可以不使用spring的定时任务
-/*    @Scheduled(fixedDelay = 1000 * 60 * 5)
-    public void clearCache() {
-
-        // 遍历删除 过期值  提前获取系统时间 以防多次调用 System.currentTimeMillis()
-        long time = System.currentTimeMillis();
-        for (String key : cacheMap.keySet()) {
-            CacheData<?> cacheData = cacheMap.get(key);
-            if (cacheData.isExpire(time)) {
-                cacheMap.remove(key);
-            }
-        }
-
-    }*/
 
 
 }

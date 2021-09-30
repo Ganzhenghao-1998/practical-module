@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/9/28 11:46
  */
 @Service("hutoolCache")
-//@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('internal_hutool')")
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_hutool", matchIfMissing = false)
 public class HutoolCacheImpl implements CacheService {
 
@@ -87,6 +86,7 @@ public class HutoolCacheImpl implements CacheService {
             }
         }*/
 
+        // todo 将锁的粒度变小
         synchronized (this) {
             if (timedCache.containsKey(cacheKey)) {
                 //如果 key存在 则返回 false 代表设置id失败
