@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.util.Timer;
@@ -21,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 //@ConditionalOnExpression("'${no.repeat.commit.no-repeat-commit-type}'.equals('internal_concurrenthashmap')"
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_concurrenthashmap", matchIfMissing = false)
-@EnableScheduling
 public class NoRepeatCommitScheduledConfig {
 
     // 创建一个 ConcurrentHashMap 初始大小 1024

@@ -19,7 +19,7 @@ public class NoRepeatCommitLockConfig {
      */
 
     /**
-     * 点切表达式
+     * 切点表达式
      */
     private String pointCutExpression = "execution(* *..controller.*.*(..))";
 

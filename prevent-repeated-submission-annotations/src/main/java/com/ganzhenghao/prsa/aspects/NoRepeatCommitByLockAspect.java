@@ -1,16 +1,15 @@
 package com.ganzhenghao.prsa.aspects;
 
+import com.ganzhenghao.prsa.annotation.ConditionalOnLock;
 import com.ganzhenghao.prsa.annotation.NoRepeatCommit;
-import com.ganzhenghao.prsa.config.NoRepeatCommitConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,16 +21,20 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Aspect
-@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "lock", matchIfMissing = false)
+//@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "lock", matchIfMissing = false)
+@ConditionalOnLock(prefix = "no.repeat.commit", name = "no-repeat-commit-type", havingValue = {"lock", "distributed_locks", "distributed_locks_redis"}, matchIfMissing = false)
 public class NoRepeatCommitByLockAspect {
 
+    @PostConstruct
+    public void init() {
+        System.out.println("NoRepeatCommitByLockAspect 加载成功! @@ ");
+    }
 
     /**
      * 映射map,用于存储对应的方法的切点表达式
      */
     private final ConcurrentHashMap<String, String> mappingMap = new ConcurrentHashMap<>(256);
-    @Autowired
-    private NoRepeatCommitConfig config;
+
 
     /**
      * 切点 动态配置

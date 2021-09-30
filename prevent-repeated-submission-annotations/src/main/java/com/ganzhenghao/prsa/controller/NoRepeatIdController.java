@@ -3,7 +3,7 @@ package com.ganzhenghao.prsa.controller;
 import cn.hutool.core.util.IdUtil;
 import com.ganzhenghao.prsa.service.CacheIdGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +20,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("${no.repeat.commit.id-controller.controller-path:id}")
-@ConditionalOnExpression("${no.repeat.commit.open-id-controller}")
+//@ConditionalOnExpression("${no.repeat.commit.open-id-controller}"
+@ConditionalOnProperty(prefix = "no.repeat.commit", name = {"open-id-controller"}, havingValue = "true", matchIfMissing = false)
 public class NoRepeatIdController {
 
     @Autowired(required = false)

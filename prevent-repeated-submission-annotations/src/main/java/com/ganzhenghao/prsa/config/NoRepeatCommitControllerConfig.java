@@ -9,9 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @version 1.0
  * @date 2021/9/30 9:17
  */
-@ConfigurationProperties("no.repeat.commit.id-controller")
 @Data
 @ConditionalOnExpression("${no.repeat.commit.open-id-controller}")
+@ConfigurationProperties("no.repeat.commit.id-controller")
 public class NoRepeatCommitControllerConfig {
 
     /*
