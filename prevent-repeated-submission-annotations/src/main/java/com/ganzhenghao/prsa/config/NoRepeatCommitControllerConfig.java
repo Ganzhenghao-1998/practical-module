@@ -1,7 +1,6 @@
 package com.ganzhenghao.prsa.config;
 
 import lombok.Data;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -10,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @date 2021/9/30 9:17
  */
 @Data
-@ConditionalOnExpression("${no.repeat.commit.open-id-controller}")
 @ConfigurationProperties("no.repeat.commit.id-controller")
 public class NoRepeatCommitControllerConfig {
 
