@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.ganzhenghao.prsa.bean.CacheData;
 import com.ganzhenghao.prsa.config.NoRepeatCommitScheduledConfig;
 import com.ganzhenghao.prsa.service.CacheService;
+import com.ganzhenghao.prsa.service.DataConsistent;
 import com.ganzhenghao.prsa.util.CacheKeyUtil;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
 
     @Autowired
     NoRepeatCommitScheduledConfig noRepeatCommitScheduledConfig;
+
     @Getter
     private ConcurrentHashMap<String, CacheData<?>> cacheMap;
+
+    @Autowired(required = false)
+    private DataConsistent dataConsistent;
 
     @PostConstruct
     public void init() {
@@ -44,6 +49,7 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
         argsCheck(id, cacheKeyPrefix, time, unit);
 
         String cacheKey = CacheKeyUtil.getCacheKey(cacheKeyPrefix, id);
+
         // 如果data为空 那么使用cacheKey
         if (StrUtil.isEmpty(data)) {
             data = cacheKey;
@@ -68,4 +74,5 @@ public class ConcurrentHashMapCacheImpl implements CacheService {
     public boolean cache(String id, String cacheKeyPrefix, Long time, TimeUnit unit) {
         return this.cache(id, cacheKeyPrefix, time, unit, "");
     }
+
 }

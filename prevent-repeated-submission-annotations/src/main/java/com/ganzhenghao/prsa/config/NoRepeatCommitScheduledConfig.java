@@ -1,6 +1,7 @@
 package com.ganzhenghao.prsa.config;
 
 import com.ganzhenghao.prsa.bean.CacheData;
+import com.ganzhenghao.prsa.bean.CacheMap;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,10 +21,8 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnProperty(prefix = "no.repeat.commit", name = {"no-repeat-commit-type"}, havingValue = "internal_concurrenthashmap", matchIfMissing = false)
 public class NoRepeatCommitScheduledConfig {
 
-    // 创建一个 ConcurrentHashMap 初始大小 1024
     @Getter
-    private final ConcurrentHashMap<String, CacheData<?>> cacheMap = new ConcurrentHashMap<>(1024);
-    ;
+    private final CacheMap cacheMap = new CacheMap(2048);
 
     @Autowired
     private NoRepeatCommitConfig config;
