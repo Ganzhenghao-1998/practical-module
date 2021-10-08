@@ -33,7 +33,7 @@ public class NoRepeatCommitByLockAspect {
     }
 
     /**
-     * 切点 动态配置
+     * todo 切点 动态配置
      * <href>https://blog.csdn.net/weixin_35297190/article/details/112734737</href>
      */
     @Pointcut("execution(* *..controller.*.*(..))")

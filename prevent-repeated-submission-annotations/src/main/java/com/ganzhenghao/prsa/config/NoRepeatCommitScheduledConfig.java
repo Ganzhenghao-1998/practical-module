@@ -43,25 +43,30 @@ public class NoRepeatCommitScheduledConfig {
 
         TimerTask timerTask = new TimerTask() {
 
-            private long maxClearCacheTime = clearCacheTime;
+            private final long maxClearCacheTime = clearCacheTime;
+
+            private long actualClearCacheTime = clearCacheTime;
 
             @Override
             public void run() {
                 // 遍历删除 过期值  提前获取系统时间 以防多次调用 System.currentTimeMillis()
-                long time = System.currentTimeMillis();
+                long time;
+
+                time = System.currentTimeMillis();
                 for (String key : cacheMap.keySet()) {
                     CacheData<?> cacheData = cacheMap.get(key);
                     if (cacheData.isExpire(time)) {
                         cacheMap.remove(key);
                     }
                 }
-                //如果当前执行清理缓存任务的时间超过间隔时间,则减小清理间隔周期
+
+                // 如果当前执行清理缓存任务的时间超过间隔时间,则减小清理间隔周期
                 // todo  具体减少策略还需斟酌 无限制减少可能会出现线程占用过大 或者 时间为负数
-                if (maxClearCacheTime <= System.currentTimeMillis() - time) {
-                    timer.cancel();
-                    maxClearCacheTime = maxClearCacheTime - 1000L;
-                    timer.schedule(this, 1000, maxClearCacheTime);
-                }
+//                if (maxClearCacheTime <= System.currentTimeMillis() - time) {
+//                    timer.cancel();
+//                    actualClearCacheTime = actualClearCacheTime - 1000L;
+//                    timer.schedule(this, 1000, actualClearCacheTime);
+//                }
 
             }
         };
@@ -73,7 +78,6 @@ public class NoRepeatCommitScheduledConfig {
         System.out.println("NoRepeatCommitScheduledConfig  加载了@");
 
     }
-
 
 
 }

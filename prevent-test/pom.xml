@@ -17,6 +17,12 @@
 
     <dependencies>
 
+        <!--        <dependency>-->
+        <!--            <groupId>com.ganzhenghao</groupId>-->
+        <!--            <artifactId>prevent-repeated-submission-annotations</artifactId>-->
+        <!--            <version>0.0.1-SNAPSHOT</version>-->
+        <!--        </dependency>-->
+
         <dependency>
             <groupId>com.ganzhenghao</groupId>
             <artifactId>prevent-repeated-submission-annotations</artifactId>

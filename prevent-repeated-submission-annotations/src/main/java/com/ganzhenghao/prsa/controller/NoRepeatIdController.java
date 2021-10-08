@@ -32,7 +32,7 @@ public class NoRepeatIdController {
 
         //todo 可以加入属性检测 检查header头等等
 
-        Map<String, String> map = new HashMap<>(2);
+        Map<String, String> map = new HashMap<>(4);
         String id = null;
         if (cacheIdGenerate == null) {
             // 使用糊涂工具生成唯一id   todo 自己实现唯一id算法
