@@ -34,7 +34,7 @@ public class CacheMap extends ConcurrentHashMap<String, CacheData<?>> {
 
     @Override
     public boolean containsKey(Object key) {
-        return !isExpire((String) key);
+        return !isExpire(key);
     }
 
     @Override
@@ -43,13 +43,18 @@ public class CacheMap extends ConcurrentHashMap<String, CacheData<?>> {
         // 删除过期key
         CacheData<?> cacheData = CACHE_MAP.get(key);
 
-        if (cacheData.isExpire()) {
+        if (cacheData != null && cacheData.isExpire()) {
             CACHE_MAP.remove(key);
         }
 
         return CACHE_MAP.putIfAbsent(key, value);
     }
 
+
+    @Override
+    public CacheData<?> remove(Object key) {
+        return CACHE_MAP.remove(key);
+    }
 
     @Override
     public CacheData<?> get(Object key) {
@@ -98,7 +103,8 @@ public class CacheMap extends ConcurrentHashMap<String, CacheData<?>> {
         }
 
         // 判断是否过期,过期则删除
-        if (CACHE_MAP.get(key).isExpire()) {
+        CacheData<?> cacheData = CACHE_MAP.get(key);
+        if (cacheData != null && cacheData.isExpire()) {
             CACHE_MAP.remove(key);
             return true;
         }

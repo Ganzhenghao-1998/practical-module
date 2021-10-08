@@ -86,6 +86,9 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                 return cacheImp(methodHandler, request, response, hutoolCache);
             case Internal_ConcurrentHashMap:
                 return cacheImp(methodHandler, request, response, concurrentHashMapCache);
+
+            default:
+                break;
         }
 
         return true;
@@ -127,6 +130,8 @@ public class NoRepeatCommitInterceptor implements HandlerInterceptor {
                     ConcurrentHashMapCacheImpl concurrentHashMapCacheImpl = (ConcurrentHashMapCacheImpl) this.concurrentHashMapCache;
                     concurrentHashMapCacheImpl.getCacheMap().remove(CacheKeyThreadLocal.get());
                     CacheKeyThreadLocal.remove();
+                    break;
+                default:
                     break;
 
             }

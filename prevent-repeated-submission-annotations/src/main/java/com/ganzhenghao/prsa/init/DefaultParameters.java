@@ -5,6 +5,8 @@ import com.ganzhenghao.prsa.exception.DataException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
+
 /**
  * 用于获取注解的默认参数
  *
@@ -31,6 +33,12 @@ public class DefaultParameters {
         } catch (Exception e) {
             throw new DataException("创建NoRepeatCommit默认注解对象失败!");
         }
+    }
+
+    @PostConstruct
+    public void init() {
+
+        System.out.println("防重复提交注解, 2021/10/8 版本!");
     }
 
 
