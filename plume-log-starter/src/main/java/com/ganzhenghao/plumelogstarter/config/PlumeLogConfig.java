@@ -17,10 +17,6 @@ public class PlumeLogConfig {
      */
     private boolean enableTrace = false;
 
-    /**
-     * 卡夫卡的主机  集群以;隔开49.234.138.177:19092;49.234.138.177:19092
-     */
-    private String kafkaHosts = "49.234.138.177:19092";
 
 
 }
