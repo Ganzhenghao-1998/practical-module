@@ -23,6 +23,10 @@ public class PlumeLogTranceIdFeignConfig {
     public RequestInterceptor requestInterceptor() {
         return template -> {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            // 避免空指针异常
+            if (attributes == null) {
+                return;
+            }
             HttpServletRequest request = attributes.getRequest();
             Enumeration<String> headerNames = request.getHeaderNames();
             if (headerNames != null) {
