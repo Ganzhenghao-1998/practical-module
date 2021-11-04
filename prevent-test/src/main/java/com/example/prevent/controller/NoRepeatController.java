@@ -4,7 +4,6 @@ import com.ganzhenghao.prsa.annotation.NoRepeatCommit;
 import com.ganzhenghao.prsa.util.CacheKeyThreadLocal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @date 2021/9/28 10:30
  */
-@RestController
+//@RestController
 @RequestMapping("/no")
 public class NoRepeatController {
 
