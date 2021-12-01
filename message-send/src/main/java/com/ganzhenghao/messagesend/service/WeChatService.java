@@ -113,9 +113,7 @@ public class WeChatService {
 
         outside.put(type.toString(), inside);
 
-
         String msg = JSON.toJSONString(outside);
-
 
         String body = HttpRequest.post(weChatConfig.getHook())
                 .body(msg)
